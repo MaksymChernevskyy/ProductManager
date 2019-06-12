@@ -42,9 +42,6 @@ public class InMemoryProductsDatabase implements ProductDatabase {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
       }
-      if (id < 0) {
-        throw new IllegalArgumentException("Id cannot be lower than zero");
-      }
       return Optional.ofNullable(products.get(id));
     }
   }
@@ -54,9 +51,6 @@ public class InMemoryProductsDatabase implements ProductDatabase {
     synchronized (lock) {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
-      }
-      if (id < 0) {
-        throw new IllegalArgumentException("Id cannot be lower than zero");
       }
       return isProductExist(id);
     }
@@ -74,9 +68,6 @@ public class InMemoryProductsDatabase implements ProductDatabase {
     synchronized (lock) {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
-      }
-      if (id < 0) {
-        throw new IllegalArgumentException("Id cannot be lower than zero");
       }
       if (!isProductExist(id)) {
         throw new DatabaseOperationException("Product does not exist");

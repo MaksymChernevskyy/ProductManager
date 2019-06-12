@@ -37,9 +37,6 @@ public class HibernateProductDatabase implements ProductDatabase {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
-    if (id < 0) {
-      throw new IllegalArgumentException("Id cannot be less than 0");
-    }
     try {
       return hibernateProductRepository.findById(id);
     } catch (NoSuchElementException e) {
@@ -51,9 +48,6 @@ public class HibernateProductDatabase implements ProductDatabase {
   public boolean exists(Long id) throws DatabaseOperationException {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
-    }
-    if (id < 0) {
-      throw new IllegalArgumentException("Id cannot be less than 0");
     }
     try {
       return hibernateProductRepository.existsById(id);
@@ -75,9 +69,6 @@ public class HibernateProductDatabase implements ProductDatabase {
   public void delete(Long id) throws DatabaseOperationException {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
-    }
-    if (id < 0) {
-      throw new IllegalArgumentException("Id cannot be less than 0");
     }
     try {
       hibernateProductRepository.deleteById(id);
