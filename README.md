@@ -30,12 +30,12 @@ To change using database go to [application.properties](https://github.com/Maksy
    application.database=hibernate
 ```
 
-To use **hibernate** , firt  configure it on your computer, use PgAdmin ( or another tool) and [hibernate.properties](https://github.com/MaksymChernevskyy/ProductManager/blob/master/src/main/resources/hibernate.properties)
+To use **hibernate** , first  configure it on your computer, use PgAdmin ( or another tool) and [hibernate.properties](https://github.com/MaksymChernevskyy/ProductManager/blob/master/src/main/resources/hibernate.properties)
 ```
 spring.datasource.url=yourDatabase
 ```
 
 ## For an end User ##
 
-```http://localhost:[PORT]/```
+```http://localhost:[PORT]/products```
 Allows you to view product data in the database
