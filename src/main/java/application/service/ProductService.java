@@ -24,10 +24,10 @@ public class ProductService {
     }
     try {
       Long id = product.getId();
-      if (id != null && productDatabase.exists(id)) {
-        throw new ServiceOperationException(String.format("Product with id %s already exists", id));
+      if (id != null && productDatabase.existsById(id)) {
+        throw new ServiceOperationException(String.format("Product with id %s already existsById", id));
       }
-      return productDatabase.create(product);
+      return productDatabase.save(product);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while adding product.", e);
     }
@@ -46,7 +46,7 @@ public class ProductService {
       throw new IllegalArgumentException("Id cannot be null.");
     }
     try {
-      return productDatabase.find(id);
+      return productDatabase.findById(id);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while getting product.", e);
     }
@@ -58,10 +58,10 @@ public class ProductService {
     }
     try {
       Long id = product.getId();
-      if (id == null || !productDatabase.exists(id)) {
+      if (id == null || !productDatabase.existsById(id)) {
         throw new ServiceOperationException(String.format("Product with id %s does not exist", id));
       }
-      productDatabase.create(product);
+      productDatabase.save(product);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while updating product.", e);
     }
@@ -72,10 +72,10 @@ public class ProductService {
       throw new IllegalArgumentException("Id cannot be null.");
     }
     try {
-      if (!productDatabase.exists(id)) {
+      if (!productDatabase.existsById(id)) {
         throw new ServiceOperationException(String.format("Product with id %s does not exist", id));
       }
-      productDatabase.delete(id);
+      productDatabase.deleteById(id);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while deleting product.", e);
     }
@@ -86,7 +86,7 @@ public class ProductService {
       throw new IllegalArgumentException("Id cannot be null.");
     }
     try {
-      return productDatabase.exists(id);
+      return productDatabase.existsById(id);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while checking if product exist.", e);
     }

@@ -113,7 +113,7 @@ public class ProductController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
       @ApiResponse(code = 201, message = "Created", response = Product.class),
-      @ApiResponse(code = 409, message = "Product already exists", response = ErrorMessage.class),
+      @ApiResponse(code = 409, message = "Product already existsById", response = ErrorMessage.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> create(@RequestBody(required = false) Product product) {
     try{

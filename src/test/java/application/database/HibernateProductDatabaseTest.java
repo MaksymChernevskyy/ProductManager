@@ -45,7 +45,7 @@ class HibernateProductDatabaseTest {
     when(hibernateProductRepository.save(product1)).thenReturn(product2);
 
     //when
-    Optional<Product> savedProduct = productDatabase.create(product1);
+    Optional<Product> savedProduct = productDatabase.save(product1);
 
     //then
     assertTrue(savedProduct.isPresent());
@@ -61,7 +61,7 @@ class HibernateProductDatabaseTest {
     when(hibernateProductRepository.findById(id)).thenReturn(Optional.ofNullable(product));
 
     //When
-    Optional<Product> actualProduct = productDatabase.find(id);
+    Optional<Product> actualProduct = productDatabase.findById(id);
 
     //Then
     assertTrue(actualProduct.isPresent());
@@ -76,7 +76,7 @@ class HibernateProductDatabaseTest {
     when(hibernateProductRepository.existsById(product.getId())).thenReturn(true);
 
     //when
-    boolean isProductExist = productDatabase.exists(product.getId());
+    boolean isProductExist = productDatabase.existsById(product.getId());
 
     //then
     Assert.assertTrue(isProductExist);
@@ -89,7 +89,7 @@ class HibernateProductDatabaseTest {
     when(hibernateProductRepository.existsById(1L)).thenReturn(false);
 
     //when
-    boolean isProductExist = productDatabase.exists(1L);
+    boolean isProductExist = productDatabase.existsById(1L);
 
     //then
     Assert.assertFalse(isProductExist);
@@ -120,30 +120,56 @@ class HibernateProductDatabaseTest {
     doNothing().when(hibernateProductRepository).deleteById(id);
 
     //when
-    productDatabase.delete(id);
+    productDatabase.deleteById(id);
 
     //then
     verify(hibernateProductRepository).deleteById(id);
   }
 
   @Test
-  void createProductMethodShouldThrowExceptionWhenProductIsNull() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.create(null));
+  void shouldDeleteAllProducts() throws DatabaseOperationException {
+    //given
+    doNothing().when(hibernateProductRepository).deleteAll();
+
+    //when
+    productDatabase.deleteAll();
+
+    //then
+    verify(hibernateProductRepository).deleteAll();
+  }
+
+  @Test
+  void shouldReturnCountOdProducts() throws DatabaseOperationException {
+    //given
+    long numberOfProducts = 3L;
+    when(hibernateProductRepository.count()).thenReturn(numberOfProducts);
+
+    //when
+    long actualNumberOfProducts = productDatabase.count();
+
+    //then
+    Assert.assertEquals(numberOfProducts, actualNumberOfProducts);
+    verify(hibernateProductRepository).count();
+  }
+
+  @Test
+  void saveProductMethodShouldThrowExceptionWhenProductIsNull() {
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.save(null));
   }
 
   @Test
   void findByIdMethodShouldThrowExceptionWhenIdIsNull() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.find(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.findById(null));
   }
 
   @Test
   void existByIdMethodShouldThrowExceptionWhenIdIsNull() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.existsById(null));
   }
 
   @Test
   void deleteByIdMethodShouldThrowExceptionWhenIdIsNull() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.existsById(null));
   }
 
   @Test
@@ -154,7 +180,7 @@ class HibernateProductDatabaseTest {
     doThrow(mockedException).when(hibernateProductRepository).deleteById(id);
 
     //Then
-    assertThrows(DatabaseOperationException.class, () -> productDatabase.delete(id));
+    assertThrows(DatabaseOperationException.class, () -> productDatabase.deleteById(id));
     verify(hibernateProductRepository).deleteById(id);
   }
 
@@ -166,7 +192,7 @@ class HibernateProductDatabaseTest {
     doThrow(mockedException).when(hibernateProductRepository).findById(id);
 
     //Then
-    assertThrows(DatabaseOperationException.class, () -> productDatabase.find(id));
+    assertThrows(DatabaseOperationException.class, () -> productDatabase.findById(id));
     verify(hibernateProductRepository).findById(id);
   }
 
@@ -178,7 +204,7 @@ class HibernateProductDatabaseTest {
     doThrow(mockedException).when(hibernateProductRepository).existsById(id);
 
     //Then
-    assertThrows(DatabaseOperationException.class, () -> productDatabase.exists(id));
+    assertThrows(DatabaseOperationException.class, () -> productDatabase.existsById(id));
     verify(hibernateProductRepository).existsById(id);
   }
 
@@ -192,4 +218,16 @@ class HibernateProductDatabaseTest {
     assertThrows(DatabaseOperationException.class, () -> productDatabase.findAll());
     verify(hibernateProductRepository).findAll();
   }
+
+  @Test
+  void deleteAllMethodShouldThrowExceptionWhenAnErrorOccurDuringExecution() {
+    //Given
+    NonTransientDataAccessException mockedException = Mockito.mock(NonTransientDataAccessException.class);
+    doThrow(mockedException).when(hibernateProductRepository).deleteAll();
+
+    //Then
+    assertThrows(DatabaseOperationException.class, () -> productDatabase.deleteAll());
+    verify(hibernateProductRepository).deleteAll();
+  }
+
 }
