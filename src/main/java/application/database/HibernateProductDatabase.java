@@ -28,7 +28,7 @@ public class HibernateProductDatabase implements ProductDatabase {
     try {
       return Optional.of(hibernateProductRepository.save(product));
     } catch (NonTransientDataAccessException e) {
-      throw new DatabaseOperationException("An error while saving invoice.", e);
+      throw new DatabaseOperationException("An error while saving product.", e);
     }
   }
 
@@ -61,7 +61,7 @@ public class HibernateProductDatabase implements ProductDatabase {
     try {
       return Optional.of(hibernateProductRepository.findAll());
     } catch (NonTransientDataAccessException e) {
-      throw new DatabaseOperationException("An error while searching for invoices.", e);
+      throw new DatabaseOperationException("An error while searching for products.", e);
     }
   }
 
