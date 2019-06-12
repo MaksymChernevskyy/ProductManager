@@ -137,28 +137,13 @@ class HibernateProductDatabaseTest {
   }
 
   @Test
-  void findByIdMethodShouldThrowExceptionWhenIdIsLessThanZero() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.find(-1L));
-  }
-
-  @Test
   void existByIdMethodShouldThrowExceptionWhenIdIsNull() {
     assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
   }
 
   @Test
-  void existByIdMethodShouldThrowExceptionWhenIdIsLessThanZero() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(-1L));
-  }
-
-  @Test
   void deleteByIdMethodShouldThrowExceptionWhenIdIsNull() {
     assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
-  }
-
-  @Test
-  void deleteByIdMethodShouldThrowExceptionWhenIdIsLessThanZero() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(-1L));
   }
 
   @Test

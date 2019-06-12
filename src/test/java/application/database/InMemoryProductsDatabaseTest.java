@@ -157,19 +157,4 @@ class InMemoryProductsDatabaseTest {
   void existsMethodShouldThrowExceptionForNullAsId() {
     assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
   }
-
-  @Test
-  void findMethodShouldThrowExceptionForNegativeNumberAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.find(-1L));
-  }
-
-  @Test
-  void deleteMethodShouldThrowExceptionForNegativeNumberAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.delete(-1L));
-  }
-
-  @Test
-  void existsMethodShouldThrowExceptionForNegativeNumberAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(-1L));
-  }
 }
