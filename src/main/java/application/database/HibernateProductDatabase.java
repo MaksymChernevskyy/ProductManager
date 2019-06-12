@@ -21,7 +21,7 @@ public class HibernateProductDatabase implements ProductDatabase {
     this.hibernateProductRepository = hibernateProductRepository;
   }
   @Override
-  public Optional<Product> create(Product product) throws DatabaseOperationException {
+  public Optional<Product> save(Product product) throws DatabaseOperationException {
     if (product == null) {
       throw new IllegalArgumentException("Product cannot be null");
     }
@@ -33,7 +33,7 @@ public class HibernateProductDatabase implements ProductDatabase {
   }
 
   @Override
-  public Optional<Product> find(Long id) throws DatabaseOperationException {
+  public Optional<Product> findById(Long id) throws DatabaseOperationException {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
@@ -45,7 +45,16 @@ public class HibernateProductDatabase implements ProductDatabase {
   }
 
   @Override
-  public boolean exists(Long id) throws DatabaseOperationException {
+  public long count() throws DatabaseOperationException {
+    try {
+      return hibernateProductRepository.count();
+    } catch (NonTransientDataAccessException e) {
+      throw new DatabaseOperationException("An error while counting products.", e);
+    }
+  }
+
+  @Override
+  public boolean existsById(Long id) throws DatabaseOperationException {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
@@ -66,7 +75,7 @@ public class HibernateProductDatabase implements ProductDatabase {
   }
 
   @Override
-  public void delete(Long id) throws DatabaseOperationException {
+  public void deleteById(Long id) throws DatabaseOperationException {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
@@ -74,6 +83,15 @@ public class HibernateProductDatabase implements ProductDatabase {
       hibernateProductRepository.deleteById(id);
     } catch (EmptyResultDataAccessException e) {
       throw new DatabaseOperationException("There was no product in database.", e);
+    }
+  }
+
+  @Override
+  public void deleteAll() throws DatabaseOperationException {
+    try {
+      hibernateProductRepository.deleteAll();
+    } catch (NonTransientDataAccessException e) {
+      throw new DatabaseOperationException("An error while deleting all products.", e);
     }
   }
 }

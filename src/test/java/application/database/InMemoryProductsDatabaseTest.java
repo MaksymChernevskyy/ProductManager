@@ -24,14 +24,14 @@ class InMemoryProductsDatabaseTest {
   }
 
   @Test
-  void shouldCreateProduct() throws DatabaseOperationException {
+  void shouldSaveProduct() throws DatabaseOperationException {
     //given
     Product productToCreate = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct = productDatabase.create(productToCreate);
+    Optional<Product> createdProduct = productDatabase.save(productToCreate);
 
     //when
     assertTrue(createdProduct.isPresent());
-    Optional<Product> productFromDatabase = productDatabase.find(createdProduct.get().getId());
+    Optional<Product> productFromDatabase = productDatabase.findById(createdProduct.get().getId());
 
     //then
     assertNotNull(productFromDatabase);
@@ -42,16 +42,16 @@ class InMemoryProductsDatabaseTest {
   void shouldUpdateProduct() throws DatabaseOperationException {
     //given
     Product productToCreating = ProductGenerator.getRandomProduct();
-    Optional<Product> productToUpdate = productDatabase.create(productToCreating);
+    Optional<Product> productToUpdate = productDatabase.save(productToCreating);
     assertTrue(productToUpdate.isPresent());
-    assertEquals(productToUpdate, productDatabase.find(productToUpdate.get().getId()));
+    assertEquals(productToUpdate, productDatabase.findById(productToUpdate.get().getId()));
     productToUpdate.get().setId(11L);
 
 
     //when
-    Optional<Product> updatedProduct = productDatabase.create(productToUpdate.get());
+    Optional<Product> updatedProduct = productDatabase.save(productToUpdate.get());
     assertTrue(updatedProduct.isPresent());
-    Optional<Product> productFromDatabase = productDatabase.find(updatedProduct.get().getId());
+    Optional<Product> productFromDatabase = productDatabase.findById(updatedProduct.get().getId());
 
     //then
     assertNotNull(productFromDatabase);
@@ -62,11 +62,11 @@ class InMemoryProductsDatabaseTest {
   void shouldFindOneProduct() throws DatabaseOperationException {
     //given
     Product productToCreating = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct = productDatabase.create(productToCreating);
+    Optional<Product> createdProduct = productDatabase.save(productToCreating);
 
     //when
     assertTrue(createdProduct.isPresent());
-    Optional<Product> productFromDatabase = productDatabase.find(createdProduct.get().getId());
+    Optional<Product> productFromDatabase = productDatabase.findById(createdProduct.get().getId());
 
     //then
     assertNotNull(productFromDatabase);
@@ -77,11 +77,11 @@ class InMemoryProductsDatabaseTest {
   void shouldReturnTrueIfProductExistsInDatabase() throws DatabaseOperationException {
     //given
     Product productToCreate = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct = productDatabase.create(productToCreate);
+    Optional<Product> createdProduct = productDatabase.save(productToCreate);
 
     //when
     assertTrue(createdProduct.isPresent());
-    boolean isProductExist = productDatabase.exists(createdProduct.get().getId());
+    boolean isProductExist = productDatabase.existsById(createdProduct.get().getId());
 
     //then
     assertTrue(isProductExist);
@@ -90,7 +90,7 @@ class InMemoryProductsDatabaseTest {
   @Test
   void shouldReturnFalseIfProductNotExistsInDatabase() throws DatabaseOperationException {
     //when
-    boolean isProductExist = productDatabase.exists(1L);
+    boolean isProductExist = productDatabase.existsById(1L);
 
     //then
     assertFalse(isProductExist);
@@ -101,15 +101,15 @@ class InMemoryProductsDatabaseTest {
     //given
     List<Product> expectedProduct = new ArrayList<>();
     Product productToCreate1 = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct1 = productDatabase.create(productToCreate1);
+    Optional<Product> createdProduct1 = productDatabase.save(productToCreate1);
     assertTrue(createdProduct1.isPresent());
     expectedProduct.add(createdProduct1.get());
     Product productToCreate2 = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct2 = productDatabase.create(productToCreate2);
+    Optional<Product> createdProduct2 = productDatabase.save(productToCreate2);
     assertTrue(createdProduct2.isPresent());
     expectedProduct.add(createdProduct2.get());
     Product productToCreate3 = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct3 = productDatabase.create(productToCreate3);
+    Optional<Product> createdProduct3 = productDatabase.save(productToCreate3);
     assertTrue(createdProduct3.isPresent());
     expectedProduct.add(createdProduct3.get());
 
@@ -126,35 +126,81 @@ class InMemoryProductsDatabaseTest {
   void shouldDeleteProduct() throws DatabaseOperationException {
     //given
     Product productToCreate = ProductGenerator.getRandomProduct();
-    Optional<Product> createdProduct = productDatabase.create(productToCreate);
+    Optional<Product> createdProduct = productDatabase.save(productToCreate);
     assertTrue(createdProduct.isPresent());
-    assertTrue(productDatabase.exists(createdProduct.get().getId()));
+    assertTrue(productDatabase.existsById(createdProduct.get().getId()));
 
     //when
-    productDatabase.delete(createdProduct.get().getId());
-    boolean isProductExists = productDatabase.exists(createdProduct.get().getId());
+    productDatabase.deleteById(createdProduct.get().getId());
+    boolean isProductExists = productDatabase.existsById(createdProduct.get().getId());
 
     //then
     assertFalse(isProductExists);
   }
 
   @Test
-  void createMethodShouldThrowExceptionForNullIAsProduct() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.create(null));
+  void shouldDeleteAllProducts() throws DatabaseOperationException {
+    //given
+    Product productToSave1 = ProductGenerator.getRandomProduct();
+    Optional<Product> savedProduct1 = productDatabase.save(productToSave1);
+    Product productToSave2 = ProductGenerator.getRandomProduct();
+    Optional<Product> savedProduct = productDatabase.save(productToSave2);
+    List<Product> productInDatabase = new ArrayList<>();
+    assertTrue(savedProduct1.isPresent());
+    productInDatabase.add(savedProduct1.get());
+    assertTrue(savedProduct.isPresent());
+    productInDatabase.add(savedProduct.get());
+    assertEquals(productInDatabase.size(), productDatabase.count());
+
+    //when
+    productDatabase.deleteAll();
+    long numberOfProducts = productDatabase.count();
+
+    //then
+    assertEquals(0, numberOfProducts);
+  }
+
+  @Test
+  void shouldReturnCountOfProducts() throws DatabaseOperationException {
+    //given
+    List<Product> products = new ArrayList<>();
+    Product productToSave1 = ProductGenerator.getRandomProduct();
+    Optional<Product> savedProduct = productDatabase.save(productToSave1);
+    assertTrue(savedProduct.isPresent());
+    products.add(savedProduct.get());
+    Product productToSave2 = ProductGenerator.getRandomProduct();
+    Optional<Product> savedProduct2 = productDatabase.save(productToSave2);
+    assertTrue(savedProduct2.isPresent());
+    products.add(savedProduct2.get());
+    Product productToSave3 = ProductGenerator.getRandomProduct();
+    Optional<Product> savedProduct3 = productDatabase.save(productToSave3);
+    assertTrue(savedProduct3.isPresent());
+    products.add(savedProduct3.get());
+
+    //when
+    long numberOfProducts = productDatabase.count();
+
+    //then
+    assertEquals(products.size(), numberOfProducts);
+  }
+
+  @Test
+  void saveMethodShouldThrowExceptionForNullIAsProduct() {
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.save(null));
   }
 
   @Test
   void findMethodShouldThrowExceptionForNullAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.find(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.findById(null));
   }
 
   @Test
   void deleteMethodShouldThrowExceptionForNullAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.delete(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.deleteById(null));
   }
 
   @Test
   void existsMethodShouldThrowExceptionForNullAsId() {
-    assertThrows(IllegalArgumentException.class, () -> productDatabase.exists(null));
+    assertThrows(IllegalArgumentException.class, () -> productDatabase.existsById(null));
   }
 }

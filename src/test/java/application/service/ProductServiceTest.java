@@ -55,14 +55,14 @@ class ProductServiceTest {
     //Given
     Optional<Product> expectedProduct = Optional.of(ProductGenerator.getRandomProduct());
     Long id = expectedProduct.get().getId();
-    when(productDatabase.find(id)).thenReturn(expectedProduct);
+    when(productDatabase.findById(id)).thenReturn(expectedProduct);
 
     //When
     Optional<Product> actualProducts = productService.getProduct(id);
 
     //Then
     assertEquals(expectedProduct, actualProducts);
-    verify(productDatabase).find(id);
+    verify(productDatabase).findById(id);
   }
 
   @Test
@@ -70,8 +70,8 @@ class ProductServiceTest {
     //Given
     Product productToCreate = ProductGenerator.getRandomProduct();
     Product expectedProduct = ProductGenerator.getRandomProduct();
-    when(productDatabase.create(productToCreate)).thenReturn(Optional.of(expectedProduct));
-    when(productDatabase.exists(productToCreate.getId())).thenReturn(false);
+    when(productDatabase.save(productToCreate)).thenReturn(Optional.of(expectedProduct));
+    when(productDatabase.existsById(productToCreate.getId())).thenReturn(false);
 
     //When
     Optional<Product> actualProduct = productService.createProduct(productToCreate);
@@ -79,64 +79,64 @@ class ProductServiceTest {
     //Then
     assertTrue(actualProduct.isPresent());
     assertEquals(expectedProduct, actualProduct.get());
-    verify(productDatabase).create(productToCreate);
-    verify(productDatabase).exists(productToCreate.getId());
+    verify(productDatabase).save(productToCreate);
+    verify(productDatabase).existsById(productToCreate.getId());
   }
 
   @Test
   void shouldUpdateProduct() throws DatabaseOperationException, ServiceOperationException {
     //Given
     Product product = ProductGenerator.getRandomProduct();
-    when(productDatabase.create(product)).thenReturn(Optional.of(product));
-    when(productDatabase.exists(product.getId())).thenReturn(true);
+    when(productDatabase.save(product)).thenReturn(Optional.of(product));
+    when(productDatabase.existsById(product.getId())).thenReturn(true);
 
     //When
     productService.updateProduct(product);
 
     //Then
-    verify(productDatabase).create(product);
-    verify(productDatabase).exists(product.getId());
+    verify(productDatabase).save(product);
+    verify(productDatabase).existsById(product.getId());
   }
 
   @Test
   void shouldDeleteProduct() throws DatabaseOperationException, ServiceOperationException {
     //Given
     Long id = 3448L;
-    when(productDatabase.exists(id)).thenReturn(true);
-    doNothing().when(productDatabase).delete(id);
+    when(productDatabase.existsById(id)).thenReturn(true);
+    doNothing().when(productDatabase).deleteById(id);
 
     //When
     productService.deleteProduct(id);
 
     //Then
-    verify(productDatabase).exists(id);
-    verify(productDatabase).delete(id);
+    verify(productDatabase).existsById(id);
+    verify(productDatabase).deleteById(id);
   }
 
   @Test
   void shouldReturnTrueWhenExist() throws DatabaseOperationException, ServiceOperationException {
     //Given
     Long id = 3448L;
-    when(productDatabase.exists(id)).thenReturn(true);
+    when(productDatabase.existsById(id)).thenReturn(true);
 
     //When
     productService.productExistsById(id);
 
     //Then
-    verify(productDatabase).exists(id);
+    verify(productDatabase).existsById(id);
   }
 
   @Test
   void shouldReturnFalseWhenNot() throws DatabaseOperationException, ServiceOperationException {
     //Given
     Long id = 3448L;
-    when(productDatabase.exists(id)).thenReturn(false);
+    when(productDatabase.existsById(id)).thenReturn(false);
 
     //When
     productService.productExistsById(id);
 
     //Then
-    verify(productDatabase).exists(id);
+    verify(productDatabase).existsById(id);
   }
 
   @Test
@@ -176,7 +176,7 @@ class ProductServiceTest {
   @Test
   void findProductMethodShouldThrowProductServiceOperationExceptionWhenWhenAnErrorOccurDuringExecutionFindingProductsInDatabase() throws DatabaseOperationException {
     //Given
-    doThrow(DatabaseOperationException.class).when(productDatabase).find(1L);
+    doThrow(DatabaseOperationException.class).when(productDatabase).findById(1L);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.getProduct(1L));
@@ -186,19 +186,19 @@ class ProductServiceTest {
   void createProductMethodShouldThrowProductServiceOperationExceptionWhenProductAlreadyExistsInDatabase() throws DatabaseOperationException {
     //Given
     Product product= ProductGenerator.getRandomProduct();
-    when(productDatabase.exists(product.getId())).thenReturn(true);
+    when(productDatabase.existsById(product.getId())).thenReturn(true);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.createProduct(product));
-    verify(productDatabase, never()).create(product);
+    verify(productDatabase, never()).save(product);
   }
 
   @Test
   void updateProductMethodShouldThrowProductServiceOperationExceptionWhenAnErrorOccurDuringExecutionFindingProductsInDatabase() throws DatabaseOperationException {
     //Given
     Product product = ProductGenerator.getRandomProduct();
-    when(productDatabase.exists(product.getId())).thenReturn(true);
-    doThrow(DatabaseOperationException.class).when(productDatabase).create(product);
+    when(productDatabase.existsById(product.getId())).thenReturn(true);
+    doThrow(DatabaseOperationException.class).when(productDatabase).save(product);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.updateProduct(product));
@@ -208,7 +208,7 @@ class ProductServiceTest {
   void updateProductMethodShouldThrowProductServiceOperationExceptionWhenProductDoesNotExist() throws DatabaseOperationException {
     //Given
     Product product = ProductGenerator.getRandomProduct();
-    when(productDatabase.exists(product.getId())).thenReturn(false);
+    when(productDatabase.existsById(product.getId())).thenReturn(false);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.updateProduct(product));
@@ -217,8 +217,8 @@ class ProductServiceTest {
   @Test
   void deleteProducMethodShouldThrowProductServiceOperationExceptionWhenWhenAnErrorOccurDuringExecutionFindingProductsFromDatabase() throws DatabaseOperationException {
     //Given
-    when(productDatabase.exists(1L)).thenReturn(true);
-    doThrow(DatabaseOperationException.class).when(productDatabase).delete(1L);
+    when(productDatabase.existsById(1L)).thenReturn(true);
+    doThrow(DatabaseOperationException.class).when(productDatabase).deleteById(1L);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.deleteProduct(1L));
@@ -228,7 +228,7 @@ class ProductServiceTest {
   void deleteProductMethodShouldThrowProductServiceOperationExceptionWhenProductDosesNotExist() throws DatabaseOperationException {
     //Given
     Product product = ProductGenerator.getRandomProduct();
-    when(productDatabase.exists(product.getId())).thenReturn(false);
+    when(productDatabase.existsById(product.getId())).thenReturn(false);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.deleteProduct(product.getId()));
@@ -238,7 +238,7 @@ class ProductServiceTest {
   void productExistsMethodShouldThrowProductServiceOperationExceptionWhenWhenAnErrorOccurDuringExecutionFindingProductInDatabase() throws DatabaseOperationException {
     //Given
     long id = 1L;
-    doThrow(DatabaseOperationException.class).when(productDatabase).exists(id);
+    doThrow(DatabaseOperationException.class).when(productDatabase).existsById(id);
 
     //Then
     assertThrows(ServiceOperationException.class, () -> productService.productExistsById(id));

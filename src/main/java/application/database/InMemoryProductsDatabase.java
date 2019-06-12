@@ -20,7 +20,7 @@ public class InMemoryProductsDatabase implements ProductDatabase {
 
 
   @Override
-  public Optional<Product> create(Product product) throws DatabaseOperationException {
+  public Optional<Product> save(Product product) throws DatabaseOperationException {
     synchronized (lock) {
       if (product == null) {
         throw new IllegalArgumentException("Product cannot be null");
@@ -37,7 +37,7 @@ public class InMemoryProductsDatabase implements ProductDatabase {
   }
 
   @Override
-  public Optional<Product> find(Long id) throws DatabaseOperationException {
+  public Optional<Product> findById(Long id) throws DatabaseOperationException {
     synchronized (lock) {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
@@ -47,7 +47,14 @@ public class InMemoryProductsDatabase implements ProductDatabase {
   }
 
   @Override
-  public boolean exists(Long id) {
+  public long count() throws DatabaseOperationException {
+    synchronized (lock) {
+      return products.size();
+    }
+  }
+
+  @Override
+  public boolean existsById(Long id) {
     synchronized (lock) {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
@@ -64,7 +71,7 @@ public class InMemoryProductsDatabase implements ProductDatabase {
   }
 
   @Override
-  public void delete(Long id) throws DatabaseOperationException {
+  public void deleteById(Long id) throws DatabaseOperationException {
     synchronized (lock) {
       if (id == null) {
         throw new IllegalArgumentException("Id cannot be null");
@@ -73,6 +80,13 @@ public class InMemoryProductsDatabase implements ProductDatabase {
         throw new DatabaseOperationException("Product does not exist");
       }
       products.remove(id);
+    }
+  }
+
+  @Override
+  public void deleteAll() throws DatabaseOperationException {
+    synchronized (lock) {
+      products.clear();
     }
   }
 
