@@ -24,7 +24,7 @@ Application is available on localhost:[PORT]. Use ```http://localhost:[PORT]/swa
 
 ## Setup Database ##
 
-To change using database go to [application.properties](https://github.com/CodersTrustPL/project-8-basia-daniel-maksym/blob/master/src/main/resources/application.properties). You can choose in-file, in-memory, mongo or hibernate database
+To change using database go to [application.properties](https://github.com/MaksymChernevskyy/ProductManager/blob/master/src/main/resources/application.properties). You can choose in-memory or hibernate database
 ```
    application.database=in-memory
    application.database=hibernate
