@@ -29,7 +29,6 @@ To change using database go to [application.properties](https://github.com/Coder
    application.database=in-memory
    application.database=hibernate
 ```
-Application works correctly without hibernate database.
 
 To use **hibernate** , firt  configure it on your computer, use PgAdmin ( or another tool) and [hibernate.properties](https://github.com/MaksymChernevskyy/ProductManager/blob/master/src/main/resources/hibernate.properties)
 ```
