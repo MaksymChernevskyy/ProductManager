@@ -1,5 +1,6 @@
 package application.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.util.Locale;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -12,15 +13,19 @@ public class Description {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(value = "The id of the description.", position = -1)
   private Long id;
 
-  private Locale language;
+  @ApiModelProperty(value = "Setting the language.", example = "EN")
+  private String language;
+
+  @ApiModelProperty(value = "Description of product.", example = "Description of product")
   private String value;
 
   public Description() {
   }
 
-  public Description(Long id, Locale language, String value) {
+  public Description(Long id, String language, String value) {
     this.id = id;
     this.language = language;
     this.value = value;
@@ -34,11 +39,11 @@ public class Description {
     this.id = id;
   }
 
-  public Locale getLanguage() {
+  public String getLanguage() {
     return language;
   }
 
-  public void setLanguage(Locale language) {
+  public void setLanguage(String language) {
     this.language = language;
   }
 
@@ -73,7 +78,7 @@ public class Description {
   public String toString() {
     return "Description{" +
         "id=" + id +
-        ", language=" + language +
+        ", language='" + language + '\'' +
         ", value='" + value + '\'' +
         '}';
   }

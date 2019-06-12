@@ -1,5 +1,6 @@
 package application.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(value = "The id of product.", example = "1234", dataType = "Long", position = -1)
   private Long id;
 
   @OneToOne(cascade = CascadeType.ALL)

@@ -7,7 +7,7 @@ public class NameGenerator {
 
   public static Name getRandomName(){
     long id = IdGenerator.getNextId();
-    Locale language = LanguageGenerator.getLanguage();
+    String language = "EN";
     String name = WordGenerator.getRandomWord();
     return new Name(id, language, name);
   }

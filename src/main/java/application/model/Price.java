@@ -1,5 +1,6 @@
 package application.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
@@ -13,8 +14,13 @@ public class Price {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(value = "The id of the price.", position = -1)
   private Long id;
+
+  @ApiModelProperty(value = "Price with dot ('.') as a separator", example = "1000.00")
   private BigDecimal price;
+
+  @ApiModelProperty(value = "Currency", example = "EUR")
   private Currency currency;
 
   public Price() {

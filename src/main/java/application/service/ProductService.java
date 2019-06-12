@@ -5,11 +5,15 @@ import application.database.ProductDatabase;
 import application.model.Product;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductService {
 
   private ProductDatabase productDatabase;
 
+  @Autowired
   public ProductService(ProductDatabase productDatabase) {
     this.productDatabase = productDatabase;
   }

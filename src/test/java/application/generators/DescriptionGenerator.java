@@ -6,7 +6,7 @@ import java.util.Locale;
 public class DescriptionGenerator {
   public static Description getRandomDescription(){
     long id = IdGenerator.getNextId();
-    Locale language = LanguageGenerator.getLanguage();
+    String language = "EN";
     String description = WordGenerator.getRandomWord();
     return new Description(id, language, description);
   }
